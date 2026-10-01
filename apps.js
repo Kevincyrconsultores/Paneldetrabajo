@@ -173,10 +173,13 @@ async function start() {
   await load(); render();
 }
 $('#lockForm').onsubmit = async e => {
-  e.preventDefault(); const err = $('#lockErr'); err.textContent = '';
-  const { error } = await sb.auth.signInWithPassword({ email: $('#email').value.trim(), password: $('#pass').value });
-  if (error) { err.textContent = 'Correo o contraseña incorrectos.'; $('#pass').value = ''; return; }
-  await start();
+  e.preventDefault(); const err = $('#lockErr'); err.textContent = 'Conectando...';
+  if (!sb) { err.textContent = 'Falta configurar config.js con la URL y la clave de Supabase, o no cargó la librería de Supabase.'; return; }
+  try {
+    const { error } = await sb.auth.signInWithPassword({ email: $('#email').value.trim(), password: $('#pass').value });
+    if (error) { err.textContent = /invalid login/i.test(error.message) ? 'Correo o contraseña incorrectos.' : 'Error de Supabase: ' + error.message; $('#pass').value = ''; return; }
+    err.textContent = ''; await start();
+  } catch (x) { err.textContent = 'No se pudo conectar con Supabase: ' + x.message + '. Revisa la URL y la clave en config.js.'; }
 };
 
 /* ---------- eventos ---------- */
