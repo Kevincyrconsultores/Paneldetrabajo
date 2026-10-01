@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C&R Consultores · Control de clientes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Bloqueo con PIN -->
+<div id="lock" class="lock">
+  <form id="lockForm">
+    <div class="brand big">
+      <img src="logo.png" alt="C&R Consultores" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <div class="mark" style="display:none">C&amp;R<small>CONSULTORES</small></div>
+    </div>
+    <p id="lockMsg">Ingresa con tu cuenta de la oficina.</p>
+    <input type="email" id="email" placeholder="Correo" aria-label="Correo" autocomplete="username" required>
+    <input type="password" id="pass" placeholder="Contraseña" aria-label="Contraseña" autocomplete="current-password" required>
+    <button class="btn" type="submit">Entrar</button>
+    <p id="lockErr" class="err"></p>
+  </form>
+</div>
+
+<div class="app">
+  <aside>
+    <div class="brand">
+      <img src="logo.png" alt="C&R Consultores" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <div class="mark" style="display:none">C&amp;R<small>CONSULTORES</small></div>
+    </div>
+    <nav id="nav">
+      <button data-v="clientes" class="on">Clientes</button>
+      <button data-v="cobranza">Cobranza</button>
+      <button data-v="respaldo">Respaldo y seguridad</button>
+    </nav>
+    <div class="who" id="who"></div>
+    <button class="btn ghost" id="lockBtn">Cerrar sesión</button>
+  </aside>
+
+  <div class="content">
+    <div class="top">
+      <h1 id="title">Clientes</h1>
+      <label class="per hid" id="perBox">Período <input type="month" id="per"></label>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <section id="v-clientes">
+      <div class="bar">
+        <input id="q" type="search" placeholder="Buscar por nombre o RUT">
+        <button class="btn" id="new">Nuevo cliente</button>
+      </div>
+      <div class="wrap">
+        <table>
+          <thead><tr><th>Razón social</th><th>RUT</th><th>Representante legal</th><th>Inicio de actividades</th><th class="n">Honorario mensual</th><th>Certificado digital</th><th></th></tr></thead>
+          <tbody id="tc"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="v-cobranza" class="hid">
+      <div class="bar">
+        <input id="qc" type="search" placeholder="Buscar cliente">
+        <select id="fc"><option value="">Todos</option><option value="pend">Con deuda</option><option value="ok">Al día</option></select>
+      </div>
+      <div class="wrap">
+        <table class="wide">
+          <thead><tr><th>Cliente</th><th class="n">Impuesto a pagar</th><th class="n">Imposiciones</th><th class="n">Imp. postergados</th><th class="n">Otros honorarios</th><th class="n">Hon. pendientes</th><th class="n">Hon. del mes</th><th class="n">Total</th><th></th></tr></thead>
+          <tbody id="tcob"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="v-respaldo" class="hid">
+      <div class="card">
+        <h2>Respaldo de datos</h2>
+        <p class="note">Los datos se guardan en Supabase y se ven iguales desde cualquier equipo. Aun así, descarga un respaldo cada cierto tiempo. El respaldo incluye las claves de acceso: guárdalo en un lugar seguro y nunca lo subas a GitHub.</p>
+        <div class="bar">
+          <button class="btn" id="exp">Descargar respaldo (JSON)</button>
+          <button class="btn sec" id="imp">Restaurar respaldo</button>
+          <button class="btn sec" id="csv">Exportar cobranza del período (CSV)</button>
+          <input type="file" id="file" accept=".json" class="hid">
+        </div>
+      </div>
+      <div class="card">
+        <h2>Seguridad</h2>
+        <p class="note">El acceso es con correo y contraseña, y solo pueden entrar las cuentas que tú crees en Supabase.</p>
+        <div class="bar"><button class="btn sec" id="chpin">Cambiar mi contraseña</button></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Ficha del cliente -->
+<dialog id="dlg">
+  <div class="mh"><h3 id="mt">Cliente</h3><button class="btn sec sm" id="x" type="button">Cerrar</button></div>
+  <div class="tabs" id="tabs"><button data-t="gen" class="on">Datos generales</button><button data-t="acc">Accesos</button></div>
+  <div class="mb" id="mb"></div>
+  <div class="mf"><button class="btn del" id="del" type="button">Eliminar cliente</button><button class="btn" id="save" type="button">Guardar cliente</button></div>
+</dialog>
+
+<!-- Cobranza del período -->
+<dialog id="dlgc">
+  <div class="mh"><h3 id="mct">Cobranza</h3><button class="btn sec sm" id="xc" type="button">Cerrar</button></div>
+  <div class="mb" id="mbc"></div>
+  <div class="mf"><span class="tot" id="ctot"></span><span class="grp"><button class="btn sec" id="prev" type="button">Traer saldo del mes anterior</button><button class="btn" id="savec" type="button">Guardar cobranza</button></span></div>
+</dialog>
+
+<div id="toast" class="toast" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
